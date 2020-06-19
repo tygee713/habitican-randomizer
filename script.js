@@ -23,7 +23,7 @@ async function equipItem (type, key) {
 }
 
 async function createRandomizeButtons () {
-    const {data : {items : {mounts : mountsObj, pets: petsObj}}} = await getUserDataJSON();;
+    const {data : {items : {mounts : mountsObj, pets: petsObj}}} = await getUserDataJSON();
     let html = ''; 
 
     let mounts = Object.keys(mountsObj).filter(m => mountsObj[m]);
@@ -64,11 +64,11 @@ async function createRandomizeButtons () {
 
     // random mount+pet logic
     if (mounts.length > 0 && pets.length > 0) {
-        document.getElementById("randomPet").addEventListener("click", () => {
+        document.getElementById("randomPetAndMount").addEventListener("click", async () => {
             let randomMount = mounts[Math.floor(mounts.length * Math.random())];
-            equipItem("mount", randomMount)
+            await equipItem("mount", randomMount)
             let randomPet = pets[Math.floor(pets.length * Math.random())];
-            equipItem("pet", randomPet)
+            await equipItem("pet", randomPet)
         })
     }
 }
