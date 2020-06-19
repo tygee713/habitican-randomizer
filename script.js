@@ -23,22 +23,52 @@ async function equipItem (type, key) {
 }
 
 async function createRandomizeButtons () {
-    const data = await getUserDataJSON();
-
+    const {data : {items : {mounts : mountsObj, pets: petsObj}}} = await getUserDataJSON();;
     let html = ''; 
 
-    let mounts = Object.keys(data.data.items.mounts).filter(m => data.data.items.mounts[m]);
+    let mounts = Object.keys(mountsObj).filter(m => mountsObj[m]);
+    let pets = Object.keys(petsObj).filter(p => petsObj[p]);
     
+    // random mount button
     if (mounts.length > 0) {
       html += '<input type="button" id="randomMount" value="Equip random mount">'
     }
 
+    // random pet button
+    if (pets.length > 0) {
+      html += '<input type="button" id="randomPet" value="Equip random pet">'
+    }
+
+    // random pet + mount button
+    if (mounts.length > 0 && pets.length > 0) {
+      html += '<input type="button" id="randomPetAndMount" value="Equip a random pet and mount">'
+    }
+
     document.getElementById("main").innerHTML = html;
 
+    // random mount logic
     if (mounts.length > 0) {
         document.getElementById("randomMount").addEventListener("click", () => {
             let randomMount = mounts[Math.floor(mounts.length * Math.random())];
             equipItem("mount", randomMount)
+        })
+    }
+
+    // random pet logic
+    if (pets.length > 0) {
+        document.getElementById("randomPet").addEventListener("click", () => {
+            let randomPet = pets[Math.floor(pets.length * Math.random())];
+            equipItem("pet", randomPet)
+        })
+    }
+
+    // random mount+pet logic
+    if (mounts.length > 0 && pets.length > 0) {
+        document.getElementById("randomPet").addEventListener("click", () => {
+            let randomMount = mounts[Math.floor(mounts.length * Math.random())];
+            equipItem("mount", randomMount)
+            let randomPet = pets[Math.floor(pets.length * Math.random())];
+            equipItem("pet", randomPet)
         })
     }
 }
