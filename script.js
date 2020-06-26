@@ -104,10 +104,10 @@ async function createRandomizeButtons () {
 
     // random transformation item
     if (transformationItems.length > 0) {
-        document.getElementById("randomTransformationItem").addEventListener("click", () => {
+        document.getElementById("randomTransformationItem").addEventListener("click", async () => {
             let randomTransformationItem = randomElememtFromArray(transformationItems)
-            let randomPartyMember = randomElememtFromArray(partyMembersArr);
-            
+            let randomPartyMember = randomElememtFromArray(partyMembersArr).id;
+            await castSkill(randomTransformationItem, randomPartyMember);
         })
     }
 }
