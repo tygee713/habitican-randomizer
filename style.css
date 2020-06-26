@@ -1,0 +1,17 @@
+:root {
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+}
+div {
+    padding: 10px;
+}
+[type='button'] {
+    margin: 10px;
+}
+.wrapper {
+    border: 3px dashed var(--purple);
+    padding: 20px;
+}
+p {
+    max-width: 500px; 
+}
