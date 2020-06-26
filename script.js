@@ -1,39 +1,17 @@
 'use strict';
 
-let UUID = null; 
-let apiKey = null;
-
-async function getUserDataJSON (){
-    UUID = document.getElementById("UUID").value; 
-    apiKey = document.getElementById("api-key").value;
-    
-    const response = await fetch('https://habitica.com/api/v3/user', {
-        method: 'GET',
-        headers: {"x-api-user": UUID, "x-api-key": apiKey} 
-    }).then(r => r.json())
-    return response;
-}; 
-async function getPartyMembersJSON () {
-    const response = await fetch('https://habitica.com/api/v3/groups/party/members', {
-        method: 'GET',
-        headers: {"x-api-user": UUID, "x-api-key": apiKey} 
-    }).then(r => r.json());
-    return response;
-}
-
-async function equipItem (type, key) {
-    const response = await fetch("https://habitica.com/api/v3/user/equip/" + type + "/" + key, {
-        method: "POST", 
-        headers: {"x-api-user": UUID, "x-api-key": apiKey}
-    }).then(res => res.json())
-    document.getElementById("header").append(response.success ? "Equipped a random thing: " + type + ": " + key : "Something went wrong!");
-}
-
 function randomElememtFromArray(arr) {
      return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function castSkill (spellId, targetId) {
+async function equipItem (type, key, UUID, apiKey) {
+    return response = await fetch("https://habitica.com/api/v3/user/equip/" + type + "/" + key, {
+        method: "POST", 
+        headers: {"x-api-user": UUID, "x-api-key": apiKey}
+    }).then(res => res.json())
+}
+
+async function castSkill (spellId, targetId, UUID, apiKey) {
     let url = "https://habitica.com/api/v3/user/class/cast/" + spellId;
     if (targetId) {
          url += "?targetId=" + targetId;
@@ -43,74 +21,98 @@ async function castSkill (spellId, targetId) {
         headers: {"x-api-user": UUID, "x-api-key": apiKey}
         
     }).then(response => response.json());
-    document.getElementById("header").append("response: " + response.success);
+    return response;
 }
 
-async function createRandomizeButtons () {
-    const {data : {items : {mounts : mountsObj, pets: petsObj, special: specialObj}}} = await getUserDataJSON();
-    const { data : partyMembersArr } = await getPartyMembersJSON();
-    console.log(partyMembersArr);
-    let html = ''; 
+function randomAnimals(mountsObj, petsObj, UUID, apiKey) {
+    let html = '';
     let mounts = Object.keys(mountsObj).filter(m => mountsObj[m]);
     let pets = Object.keys(petsObj).filter(p => petsObj[p]);
-   
-        // random mount button
+    html += '<p>Don\'t want to choose your next mount or pet? You can randomize with a click.</p><p>Each pet and mount has the same chance to come out, so it can happen that if currect equipped animal is selected, then it is just unequipped.</p>'
+    // random mount button
     if (mounts.length > 0) {
       html += '<input type="button" id="randomMount" value="Equip random mount">'
+    } else {
+        html += '<p>Mounts not found</p>'
     }
 
     // random pet button
     if (pets.length > 0) {
       html += '<input type="button" id="randomPet" value="Equip random pet">'
+    } else {
+        html += '<p>Pets not found</p>'
     }
 
     // random pet + mount button
     if (mounts.length > 0 && pets.length > 0) {
-      html += '<input type="button" id="randomPetAndMount" value="Equip a random pet and mount">'
+      html += '<input type="button" id="randomPetAndMount" value="Equip random pet and mount">'
     }
+    html += '<p id="animalResponse"></p>';
 
-    // random transformation item
-     let transformationItems = ["snowball", "spookySparkles", "seafoam", "shinySeed"].filter(i => specialObj[i] && specialObj[i] > 0);
-    if (transformationItems.length > 0) {
-        html += '<input type="button" id="randomTransformationItem" value="Cast random transformation item on random party member">'
-    }
-    document.getElementById("main").innerHTML = html;
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    div.classList.add("wrapper");
+    document.getElementById("main").appendChild(div);
 
-    // random mount logic
-    if (mounts.length > 0) {
-        document.getElementById("randomMount").addEventListener("click", () => {
-            let randomMount = randomElememtFromArray(mounts);
-            equipItem("mount", randomMount)
-        })
-    }
+    document.getElementById("randomPet").addEventListener("click", async () => {
+        let randomPetToEquip = randomElememtFromArray(pets);
+        let response = await equipItem("pet", randomPetToEquip, UUID, apiKey)
+        document.getElementById("animalResponse").innerHTML = response.success? "Successfully equipped pet " + randomPetToEquip : "Something went wrong";
+    });
 
-    // random pet logic
-    if (pets.length > 0) {
-        document.getElementById("randomPet").addEventListener("click", () => {
-            let randomPet = randomElememtFromArray(pets);
-            equipItem("pet", randomPet)
-        })
-    }
+    document.getElementById("randomMount").addEventListener("click", async () => {
+        let randomMountToEquip = randomElememtFromArray(mounts);
+        let response = await equipItem("mount", randomMountToEquip, UUID, apiKey)
+        document.getElementById("animalResponse").innerHTML = response.success? "Successfully equipped mount " + randomPetToEquip : "Something went wrong";
+    });
 
-    // random mount+pet logic
-    if (mounts.length > 0 && pets.length > 0) {
-        document.getElementById("randomPetAndMount").addEventListener("click", async () => {
-            let randomMount = randomElememtFromArray(mounts);
-            await equipItem("mount", randomMount)
-            let randomPet = randomElememtFromArray(pets);
-            await equipItem("pet", randomPet)
-        })
-    }
+    document.getElementById("randomPetAndMount").addEventListener("click", async () => {
+        let randomPetToEquip = randomElememtFromArray(pets);
+        let randomMountToEquip = randomElememtFromArray(mounts);
+        let response1 = await equipItem("pet", randomPetToEquip, UUID, apiKey)
+        let response2 = await equipItem("mount", randomMountToEquip, UUID, apiKey)
+        document.getElementById("animalResponse").innerHTML = response1.success && response2.success? "Successfully equipped pet " + randomPetToEquip + " and mount " + randomMountToEquip : "Something went wrong";
+    });
 
-    // random transformation item
-    if (transformationItems.length > 0) {
-        document.getElementById("randomTransformationItem").addEventListener("click", async () => {
-            let randomTransformationItem = randomElememtFromArray(transformationItems)
-            let randomPartyMember = randomElememtFromArray(partyMembersArr).id;
-            await castSkill(randomTransformationItem, randomPartyMember);
-        })
-    }
 }
 
-document.getElementById('submit-api-key').addEventListener("click", createRandomizeButtons);
+function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
+    let html = '<p>Do you have many party members and many transformation items and choosing is so much effort? No issue, just press a button, and no choice is necessary.</p>';
+    let transformationItems = ["snowball", "spookySparkles", "seafoam", "shinySeed"].filter(i => specialObj[i] && specialObj[i] > 0);
+    if (transformationItems.length > 0) {
+        html += '<input type="button" id="randomTransformationItem" value="Cast random transformation item on random party member">'
+    } else {
+        html += "No transformation items were found"
+    }
 
+    html += '<p id="transfResponse"></p>';
+
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    div.classList.add("wrapper");
+    document.getElementById("main").appendChild(div);
+
+    document.getElementById("randomTransformationItem").addEventListener("click", async () => {
+        let randomTransformationItem = randomElememtFromArray(transformationItems)
+        let randomPartyMember = randomElememtFromArray(partyMembersArr).id;
+
+        let {success} = await castSkill(randomTransformationItem, randomPartyMember, UUID, apiKey).then(resp => resp.json());
+        document.getElementById("transfResponse").innerText(success ? "Party member successfully transformed" : "Something went wrong")
+    })
+}
+
+document.getElementById('submit-api-key').addEventListener("click", async () => {
+    let UUID = document.getElementById("UUID").value; 
+    let apiKey = document.getElementById("api-key").value;  
+    
+    const {data : {items : {mounts : mountsObj, pets: petsObj, special: specialObj}}} = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json())
+    const {success : partyDataWasFound, error, data : partyMembersArr } = await fetch('https://habitica.com/api/v3/groups/party/members', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
+    document.getElementById("main").innerHTML = "";
+
+    randomAnimals(mountsObj, petsObj, UUID, apiKey);
+
+    if (partyDataWasFound) {
+        randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey);
+    }
+});
