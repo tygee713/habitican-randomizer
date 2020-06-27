@@ -98,11 +98,11 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
     if (transformationItems.length > 0) {
     document.getElementById("randomTransformationItem").addEventListener("click", async () => {
         let randomTransformationItem = randomElememtFromArray(transformationItems)
-        let randomPartyMember = randomElememtFromArray(partyMembersArr).id;
+        let randomPartyMemberObj = randomElememtFromArray(partyMembersArr);
 
-        let {success} = await castSkill(randomTransformationItem, randomPartyMember, UUID, apiKey).then(resp => resp.json());
-        console.log(success);
-        document.getElementById("transfResponse").innerHTML = (success ? "Party member successfully transformed" : "Something went wrong");
+        let response = await castSkill(randomTransformationItem, randomPartyMemberObj.id, UUID, apiKey).then(resp => resp.json());
+        
+        document.getElementById("transfResponse").innerHTML = randomTransformationItem + " was used on " + randomPartyMemberObj.profile.name + " (" + randomPartyMemberObj.auth.local.username + ").";
     })}
 }
 
@@ -112,7 +112,7 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
     
     const {data : {items : {mounts : mountsObj, pets: petsObj, special: specialObj}}} = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json())
     const {success : partyDataWasFound, error, data : partyMembersArr } = await fetch('https://habitica.com/api/v3/groups/party/members', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
-    
+    console.log(partyMembersArr);
     document.getElementById("main").innerHTML = "";
 
     randomAnimals(mountsObj, petsObj, UUID, apiKey);
