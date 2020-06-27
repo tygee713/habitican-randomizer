@@ -5,7 +5,7 @@ function randomElememtFromArray(arr) {
 }
 
 async function equipItem (type, key, UUID, apiKey) {
-    return response = await fetch("https://habitica.com/api/v3/user/equip/" + type + "/" + key, {
+    return await fetch("https://habitica.com/api/v3/user/equip/" + type + "/" + key, {
         method: "POST", 
         headers: {"x-api-user": UUID, "x-api-key": apiKey}
     }).then(res => res.json())
@@ -54,25 +54,28 @@ function randomAnimals(mountsObj, petsObj, UUID, apiKey) {
     div.classList.add("wrapper");
     document.getElementById("main").appendChild(div);
 
+    if (pets.length > 0) {
     document.getElementById("randomPet").addEventListener("click", async () => {
         let randomPetToEquip = randomElememtFromArray(pets);
         let response = await equipItem("pet", randomPetToEquip, UUID, apiKey)
         document.getElementById("animalResponse").innerHTML = response.success? "Successfully equipped pet " + randomPetToEquip : "Something went wrong";
-    });
+    });}
 
+        if (mounts.length > 0) {
     document.getElementById("randomMount").addEventListener("click", async () => {
         let randomMountToEquip = randomElememtFromArray(mounts);
         let response = await equipItem("mount", randomMountToEquip, UUID, apiKey)
-        document.getElementById("animalResponse").innerHTML = response.success? "Successfully equipped mount " + randomPetToEquip : "Something went wrong";
-    });
+        document.getElementById("animalResponse").innerHTML = response.success? "Successfully equipped mount " + randomMountToEquip : "Something went wrong";
+    });}
 
+    if (pets.length> 0 && mounts.length > 0) {
     document.getElementById("randomPetAndMount").addEventListener("click", async () => {
         let randomPetToEquip = randomElememtFromArray(pets);
         let randomMountToEquip = randomElememtFromArray(mounts);
         let response1 = await equipItem("pet", randomPetToEquip, UUID, apiKey)
         let response2 = await equipItem("mount", randomMountToEquip, UUID, apiKey)
         document.getElementById("animalResponse").innerHTML = response1.success && response2.success? "Successfully equipped pet " + randomPetToEquip + " and mount " + randomMountToEquip : "Something went wrong";
-    });
+    });}
 
 }
 
@@ -92,13 +95,15 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
     div.classList.add("wrapper");
     document.getElementById("main").appendChild(div);
 
+    if (document.length > 0) {
     document.getElementById("randomTransformationItem").addEventListener("click", async () => {
         let randomTransformationItem = randomElememtFromArray(transformationItems)
         let randomPartyMember = randomElememtFromArray(partyMembersArr).id;
 
         let {success} = await castSkill(randomTransformationItem, randomPartyMember, UUID, apiKey).then(resp => resp.json());
-        document.getElementById("transfResponse").innerText(success ? "Party member successfully transformed" : "Something went wrong")
-    })
+        console.log(success);
+        document.getElementById("transfResponse").innerHTML = (success ? "Party member successfully transformed" : "Something went wrong");
+    })}
 }
 
 document.getElementById('submit-api-key').addEventListener("click", async () => {
