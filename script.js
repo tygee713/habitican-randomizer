@@ -95,7 +95,7 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
     div.classList.add("wrapper");
     document.getElementById("main").appendChild(div);
 
-    if (document.length > 0) {
+    if (transformationItems.length > 0) {
     document.getElementById("randomTransformationItem").addEventListener("click", async () => {
         let randomTransformationItem = randomElememtFromArray(transformationItems)
         let randomPartyMember = randomElememtFromArray(partyMembersArr).id;
