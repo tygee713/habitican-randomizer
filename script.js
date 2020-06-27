@@ -88,7 +88,7 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
         html += "No transformation items were found"
     }
 
-    html += '<p id="transfResponse"></p>';
+    html += '<p id="transformation-item-response"></p>';
 
     let div = document.createElement("div");
     div.innerHTML = html;
@@ -101,8 +101,8 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
         let randomPartyMemberObj = randomElememtFromArray(partyMembersArr);
 
         let response = await castSkill(randomTransformationItem, randomPartyMemberObj.id, UUID, apiKey).then(resp => resp.json());
-        
-        document.getElementById("transfResponse").innerHTML = randomTransformationItem + " was used on " + randomPartyMemberObj.profile.name + " (" + randomPartyMemberObj.auth.local.username + ").";
+        console.log("I hate you");
+        document.getElementById("transformation-item-response").innerHTML = randomTransformationItem + " was used on " + randomPartyMemberObj.profile.name + " (" + randomPartyMemberObj.auth.local.username + ").";
     })}
 }
 
