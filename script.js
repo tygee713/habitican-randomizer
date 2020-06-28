@@ -139,6 +139,8 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
     let UUID = document.getElementById("UUID").value; 
     let apiKey = document.getElementById("api-key").value;  
     
+    const stuff = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    console.log(stuff);
     const {
         data : {
             items : {
@@ -151,8 +153,7 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
                 class : userClass
             }
         }
-    } = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
-    
+    } = stuff;
     const {
         success : partyDataWasFound,
         error,
