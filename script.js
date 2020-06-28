@@ -105,7 +105,7 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
     })}
 }
 
-function randomEquipment (gp, c, eqArr, UUID, apiKey) {
+function buyRandomEquipment (gp, c, eqArr, UUID, apiKey) {
     let html = '<p>Do you have too much stuff to buy, after maybe emptying your inventory ';
     html += 'by resetting your account, or kind request to an admin?';
     html += 'Just buy a random one using the button!</p>';
@@ -135,12 +135,29 @@ function randomEquipment (gp, c, eqArr, UUID, apiKey) {
     
 }
 
+async function randomBackground (backgrounds, UUID, apiKey) {
+    let html = '<p>Don\'t know what to wear? Let the Random Numger Generator choose your background!</p>'
+    html += '<input type="button" id="equipRandomBackground" value="Equip random background">'
+    html += '<p id="backgroundResponse"></p>'
+
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    div.classList.add("wrapper");
+    div.setAttribute("id", "randomEquipmentDiv");
+    document.getElementById("main").appendChild(div);
+
+    document.getElementById("equipRandomBackground").addEventListener("click", async () => {
+        let backgroundToEquip = randomElememtFromArray(backgrounds);
+        const response = await fetch("https://habitica.com/api/v3/user/unlock?path=background." + backgroundToEquip, {method: "POST", headers: {"x-api-user": UUID, "x-api-key": apiKey}})
+                                            .then(resp => resp.json());
+        document.getElementById("backgroundResponse").innerHTML = (response.success ? ("Equipped background " + backgroundToEquip) : "Something went wrong")
+    })
+}
+
 document.getElementById('submit-api-key').addEventListener("click", async () => {
     let UUID = document.getElementById("UUID").value; 
     let apiKey = document.getElementById("api-key").value;  
     
-    const stuff = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
-    console.log(stuff);
     const {
         data : {
             items : {
@@ -151,9 +168,13 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
             stats : {
                 gp : goldOwned,
                 class : userClass
+            },
+            purchased : {
+                background : backgroundsObj
             }
         }
-    } = stuff;
+    } = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
     const {
         success : partyDataWasFound,
         error,
@@ -172,5 +193,7 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
         randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey);
     }
 
-    randomEquipment(goldOwned, userClass, availableEquipmentArr, UUID, apiKey);
+    randomBackground(Object.keys(backgroundsObj), UUID, apiKey)
+
+    buyRandomEquipment(goldOwned, userClass, availableEquipmentArr, UUID, apiKey);
 });
