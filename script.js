@@ -106,8 +106,33 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
 }
 
 function randomEquipment (gp, c, eqArr, UUID, apiKey) {
+    let html = '<p>Do you have too much stuff to buy, after maybe emptying your inventory ';
+    html += 'by resetting your account, or kind request to an admin?';
+    html += 'Just buy a random one using the button!</p>';
     eqArr = eqArr.filter(i => i.value <= gp && (i.klass === "special" || i.klass === c));
-    console.log(eqArr);
+    if (eqArr.length > 0) {
+        html += '<input type="button" id="buyRandomEquipment" value="Buy random piece of equipment">'
+    } else {
+        html += "No purchasable equipment was found. Maybe you do not have anything remaining in the Market, or you need to change class or get more gold.";
+    }
+
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    div.classList.add("wrapper");
+    div.setAttribute("id", "randomEquipmentDiv");
+    document.getElementById("main").appendChild(div);
+
+    if (eqArr.length > 0) {
+        document
+            .getElementById("buyRandomEquipment")
+            .addEventListener("click", async () => {
+                let itemToPurchase = randomElememtFromArray(eqArr);
+                const response = await fetch("https://habitica.com/api/v3/user/buy-gear/" + itemToPurchase.key, {method: "POST", headers: {"x-api-user": UUID, "x-api-key": apiKey}})
+                                            .then(resp => resp.json());
+                document.getElementById("randomEquipmentDiv").innerHTML = response.message;
+        })
+    }
+    
 }
 
 document.getElementById('submit-api-key').addEventListener("click", async () => {
