@@ -16,3 +16,8 @@ div {
 p {
     max-width: 500px; 
 }
+
+.not-found {
+      border: 1px red dotted;
+      padding: 5px;
+  }

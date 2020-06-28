@@ -33,14 +33,14 @@ function randomAnimals(mountsObj, petsObj, UUID, apiKey) {
     if (mounts.length > 0) {
       html += '<input type="button" id="randomMount" value="Equip random mount">'
     } else {
-        html += '<p>Mounts not found</p>'
+        html += '<p class="not-found">Mounts not found</p>'
     }
 
     // random pet button
     if (pets.length > 0) {
       html += '<input type="button" id="randomPet" value="Equip random pet">'
     } else {
-        html += '<p>Pets not found</p>'
+        html += '<p class="not-found">Pets not found</p>'
     }
 
     // random pet + mount button
@@ -85,10 +85,10 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
     if (transformationItems.length > 0) {
         html += '<input type="button" id="randomTransformationItem" value="Cast random transformation item on random party member">'
     } else {
-        html += "No transformation items were found"
+        html += '<p id="not-found">No transformation items were found</p>';
     }
 
-    html += '<p id="transformation-item-response"></p>';
+    html += '<p class="transformation-item-response"></p>';
 
     let div = document.createElement("div");
     div.innerHTML = html;
@@ -113,7 +113,7 @@ function randomEquipment (gp, c, eqArr, UUID, apiKey) {
     if (eqArr.length > 0) {
         html += '<input type="button" id="buyRandomEquipment" value="Buy random piece of equipment">'
     } else {
-        html += "No purchasable equipment was found. Maybe you do not have anything remaining in the Market, or you need to change class or get more gold.";
+        html += '<p class="not-found">No purchasable equipment was found. Maybe you do not have anything remaining in the Market, or you need to change class or get more gold.</p>';
     }
 
     let div = document.createElement("div");
