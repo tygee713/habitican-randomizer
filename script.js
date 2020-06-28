@@ -105,12 +105,39 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
     })}
 }
 
+function randomEquipment (gp, c, eqArr, UUID, apiKey) {
+    eqArr = eqArr.filter(i => i.value <= gp && (i.klass === "special" || i.klass === c));
+    console.log(eqArr);
+}
+
 document.getElementById('submit-api-key').addEventListener("click", async () => {
     let UUID = document.getElementById("UUID").value; 
     let apiKey = document.getElementById("api-key").value;  
     
-    const {data : {items : {mounts : mountsObj, pets: petsObj, special: specialObj}}} = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json())
-    const {success : partyDataWasFound, error, data : partyMembersArr } = await fetch('https://habitica.com/api/v3/groups/party/members', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    const {
+        data : {
+            items : {
+                mounts : mountsObj,
+                pets: petsObj, 
+                special: specialObj
+            },
+            stats : {
+                gp : goldOwned,
+                class : userClass
+            }
+        }
+    } = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
+    const {
+        success : partyDataWasFound,
+        error,
+        data : partyMembersArr
+    } = await fetch('https://habitica.com/api/v3/groups/party/members', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
+    const {
+        data : availableEquipmentArr
+    } = await fetch('https://habitica.com/api/v3/user/inventory/buy', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
     document.getElementById("main").innerHTML = "";
 
     randomAnimals(mountsObj, petsObj, UUID, apiKey);
@@ -118,4 +145,6 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
     if (partyDataWasFound) {
         randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey);
     }
+
+    randomEquipment(goldOwned, userClass, availableEquipmentArr, UUID, apiKey);
 });
