@@ -105,12 +105,64 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
     })}
 }
 
+function randomEquipment (gp, c, eqArr, UUID, apiKey) {
+    let html = '<p>Do you have too much stuff to buy, after maybe emptying your inventory ';
+    html += 'by resetting your account, or kind request to an admin?';
+    html += 'Just buy a random one using the button!</p>';
+    eqArr = eqArr.filter(i => i.value <= gp && (i.klass === "special" || i.klass === c));
+    if (eqArr.length > 0) {
+        html += '<input type="button" id="buyRandomEquipment" value="Buy random piece of equipment">'
+    } else {
+        html += "No purchasable equipment was found. Maybe you do not have anything remaining in the Market, or you need to change class or get more gold.";
+    }
+
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    div.classList.add("wrapper");
+    div.setAttribute("id", "randomEquipmentDiv");
+    document.getElementById("main").appendChild(div);
+
+    if (eqArr.length > 0) {
+        document
+            .getElementById("buyRandomEquipment")
+            .addEventListener("click", async () => {
+                let itemToPurchase = randomElememtFromArray(eqArr);
+                const response = await fetch("https://habitica.com/api/v3/user/buy-gear/" + itemToPurchase.key, {method: "POST", headers: {"x-api-user": UUID, "x-api-key": apiKey}})
+                                            .then(resp => resp.json());
+                document.getElementById("randomEquipmentDiv").innerHTML = response.message;
+        })
+    }
+    
+}
+
 document.getElementById('submit-api-key').addEventListener("click", async () => {
     let UUID = document.getElementById("UUID").value; 
     let apiKey = document.getElementById("api-key").value;  
     
-    const {data : {items : {mounts : mountsObj, pets: petsObj, special: specialObj}}} = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json())
-    const {success : partyDataWasFound, error, data : partyMembersArr } = await fetch('https://habitica.com/api/v3/groups/party/members', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    const {
+        data : {
+            items : {
+                mounts : mountsObj,
+                pets: petsObj, 
+                special: specialObj
+            },
+            stats : {
+                gp : goldOwned,
+                class : userClass
+            }
+        }
+    } = await fetch('https://habitica.com/api/v3/user', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
+    const {
+        success : partyDataWasFound,
+        error,
+        data : partyMembersArr
+    } = await fetch('https://habitica.com/api/v3/groups/party/members', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
+    const {
+        data : availableEquipmentArr
+    } = await fetch('https://habitica.com/api/v3/user/inventory/buy', {method: 'GET', headers: {"x-api-user": UUID, "x-api-key": apiKey}}).then(r => r.json());
+    
     document.getElementById("main").innerHTML = "";
 
     randomAnimals(mountsObj, petsObj, UUID, apiKey);
@@ -118,4 +170,6 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
     if (partyDataWasFound) {
         randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey);
     }
+
+    randomEquipment(goldOwned, userClass, availableEquipmentArr, UUID, apiKey);
 });
