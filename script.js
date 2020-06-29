@@ -143,7 +143,7 @@ async function randomBackground (backgrounds, UUID, apiKey) {
     let div = document.createElement("div");
     div.innerHTML = html;
     div.classList.add("wrapper");
-    div.setAttribute("id", "randomEquipmentDiv");
+    div.setAttribute("id", "equipRandomBackground");
     document.getElementById("main").appendChild(div);
 
     document.getElementById("equipRandomBackground").addEventListener("click", async () => {
