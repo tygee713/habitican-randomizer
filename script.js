@@ -88,7 +88,7 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
         html += '<p id="not-found">No transformation items were found</p>';
     }
 
-    html += '<p class="transformation-item-response"></p>';
+    html += '<p id="transformation-item-response"></p>';
 
     let div = document.createElement("div");
     div.innerHTML = html;
