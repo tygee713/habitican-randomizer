@@ -236,6 +236,17 @@ function startRandomQuest(questsObj, userLevel, headers) {
 }
 
 function equipRandomEquipment(gearOwned) {
+  let html = "<h2>Random Costume or Battle Gear</h2>"
+  html += "<p>Don't know what to wear? Let the RNG choose for you!</p>"
+  html += "<p>Want to make it harder? Let RNG choose your equipment!</p>"
+  html += '<input type="button" id="randomBattleGear" value="Set your Battle Gear randomly">'
+  html += '<input type="button" id="randomCostume" value="Set your Costume randomly">'
+  html += "<p id='randomEquipResponse'></p>"
+
+  let div = document.createElement("div");
+  div.innerHTML = html;
+  div.classList.add("wrapper");
+  document.getElementById("main").appendChild(div);
 
 }
 
