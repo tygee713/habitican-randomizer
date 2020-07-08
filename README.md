@@ -8,3 +8,4 @@ Features:
  - casting of random transformation item on random party member
  - equipping a random background
  - buying a random piece of equipment from the market
+ - start a random quest
