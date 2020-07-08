@@ -4,33 +4,27 @@ function randomElememtFromArray(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function equipItem(type, key, UUID, apiKey) {
-  return await fetch("https://habitica.com/api/v3/user/equip/" + type + "/" + key, {
+async function equipItem(type, key, headers) {
+  return await fetch(`https://habitica.com/api/v3/user/equip/${type}/${key}`, {
     method: "POST",
-    headers: {
-      "x-api-user": UUID,
-      "x-api-key": apiKey
-    }
+    headers
   }).then(res => res.json())
 }
 
-async function castSkill(spellId, targetId, UUID, apiKey) {
-  let url = "https://habitica.com/api/v3/user/class/cast/" + spellId;
+async function castSkill(spellId, targetId, headers) {
+  let url = `https://habitica.com/api/v3/user/class/cast/${spellId}`;
   if (targetId) {
     url += "?targetId=" + targetId;
   }
   let response = await fetch(url, {
     method: "POST",
-    headers: {
-      "x-api-user": UUID,
-      "x-api-key": apiKey
-    }
+    headers
 
   }).then(response => response.json());
   return response;
 }
 
-function randomAnimals(mountsObj, petsObj, UUID, apiKey) {
+function randomAnimals(mountsObj, petsObj, headers) {
   let html = '';
   let mounts = Object.keys(mountsObj).filter(m => mountsObj[m]);
   let pets = Object.keys(petsObj).filter(p => petsObj[p]);
@@ -63,16 +57,16 @@ function randomAnimals(mountsObj, petsObj, UUID, apiKey) {
   if (pets.length > 0) {
     document.getElementById("randomPet").addEventListener("click", async () => {
       let randomPetToEquip = randomElememtFromArray(pets);
-      let response = await equipItem("pet", randomPetToEquip, UUID, apiKey)
-      document.getElementById("animalResponse").innerHTML = response.success ? "Successfully equipped pet " + randomPetToEquip : "Something went wrong";
+      let response = await equipItem("pet", randomPetToEquip, headers)
+      document.getElementById("animalResponse").innerHTML = response.success ? `Successfully equipped pet ${randomPetToEquip}` : "Something went wrong";
     });
   }
 
   if (mounts.length > 0) {
     document.getElementById("randomMount").addEventListener("click", async () => {
       let randomMountToEquip = randomElememtFromArray(mounts);
-      let response = await equipItem("mount", randomMountToEquip, UUID, apiKey)
-      document.getElementById("animalResponse").innerHTML = response.success ? "Successfully equipped mount " + randomMountToEquip : "Something went wrong";
+      let response = await equipItem("mount", randomMountToEquip, headers)
+      document.getElementById("animalResponse").innerHTML = response.success ? `Successfully equipped mount ${randomMountToEquip}` : "Something went wrong";
     });
   }
 
@@ -80,15 +74,15 @@ function randomAnimals(mountsObj, petsObj, UUID, apiKey) {
     document.getElementById("randomPetAndMount").addEventListener("click", async () => {
       let randomPetToEquip = randomElememtFromArray(pets);
       let randomMountToEquip = randomElememtFromArray(mounts);
-      let response1 = await equipItem("pet", randomPetToEquip, UUID, apiKey)
-      let response2 = await equipItem("mount", randomMountToEquip, UUID, apiKey)
-      document.getElementById("animalResponse").innerHTML = response1.success && response2.success ? "Successfully equipped pet " + randomPetToEquip + " and mount " + randomMountToEquip : "Something went wrong";
+      let response1 = await equipItem("pet", randomPetToEquip, headers)
+      let response2 = await equipItem("mount", randomMountToEquip, headers)
+      document.getElementById("animalResponse").innerHTML = response1.success && response2.success ? `Successfully equipped pet ${randomPetToEquip} and mount ${randomMountToEquip}` : "Something went wrong";
     });
   }
 
 }
 
-function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
+function randomTransformationItem(specialObj, partyMembersArr, headers) {
   let html = '<h2>Random Transformation Item</h2><p>Do you have many party members and many transformation items and choosing is so much effort? No issue, just press a button, and no choice is necessary.</p>';
   let transformationItems = ["snowball", "spookySparkles", "seafoam", "shinySeed"].filter(i => specialObj[i] && specialObj[i] > 0);
   if (transformationItems.length > 0) {
@@ -109,13 +103,13 @@ function randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey) {
       let randomTransformationItem = randomElememtFromArray(transformationItems)
       let randomPartyMemberObj = randomElememtFromArray(partyMembersArr);
 
-      let response = await castSkill(randomTransformationItem, randomPartyMemberObj.id, UUID, apiKey);
-      document.getElementById("transformation-item-response").innerHTML = randomTransformationItem + " was used on " + randomPartyMemberObj.profile.name + " (" + randomPartyMemberObj.auth.local.username + ").";
+      let response = await castSkill(randomTransformationItem, randomPartyMemberObj.id, headers);
+      document.getElementById("transformation-item-response").innerHTML = `${randomTransformationItem} was used on ${randomPartyMemberObj.profile.name} (${randomPartyMemberObj.auth.local.username}).`;
     })
   }
 }
 
-function buyRandomEquipment(gp, c, eqArr, UUID, apiKey) {
+function buyRandomEquipment(gp, c, eqArr, headers) {
   let html = '<h2>Buy Random Equipment from the Market!</h2><p>Do you have too much stuff to buy, after maybe emptying your inventory ';
   html += 'by resetting your account, or kind request to an admin?';
   html += 'Just buy a random one using the button!</p>';
@@ -137,12 +131,9 @@ function buyRandomEquipment(gp, c, eqArr, UUID, apiKey) {
       .getElementById("buyRandomEquipment")
       .addEventListener("click", async () => {
         let itemToPurchase = randomElememtFromArray(eqArr);
-        const response = await fetch("https://habitica.com/api/v3/user/buy-gear/" + itemToPurchase.key, {
+        const response = await fetch(`https://habitica.com/api/v3/user/buy-gear/${itemToPurchase.key}`, {
             method: "POST",
-            headers: {
-              "x-api-user": UUID,
-              "x-api-key": apiKey
-            }
+            headers
           })
           .then(resp => resp.json());
         document.getElementById("randomEquipmentDiv").innerHTML = response.message;
@@ -151,7 +142,7 @@ function buyRandomEquipment(gp, c, eqArr, UUID, apiKey) {
 
 }
 
-async function randomBackground(backgrounds, UUID, apiKey) {
+async function randomBackground(backgrounds, headers) {
   let html = '<h2>Equip a Random Background</h2><p>Don\'t know what to wear? Let the Random Numger Generator choose your background!</p>'
   html += '<input type="button" id="equipRandomBackgroundButton" value="Equip random background">'
   html += '<p id="backgroundResponse"></p>'
@@ -164,15 +155,12 @@ async function randomBackground(backgrounds, UUID, apiKey) {
 
   document.getElementById("equipRandomBackgroundButton").addEventListener("click", async () => {
     let backgroundToEquip = randomElememtFromArray(backgrounds);
-    const response = await fetch("https://habitica.com/api/v3/user/unlock?path=background." + backgroundToEquip, {
+    const response = await fetch(`https://habitica.com/api/v3/user/unlock?path=background.${backgroundToEquip}`, {
         method: "POST",
-        headers: {
-          "x-api-user": UUID,
-          "x-api-key": apiKey
-        }
+        headers
       })
       .then(resp => resp.json());
-    document.getElementById("backgroundResponse").innerHTML = (response.success ? ("Equipped background " + backgroundToEquip) : "Something went wrong")
+    document.getElementById("backgroundResponse").innerHTML = (response.success ? (`Equipped background ${backgroundToEquip}`) : "Something went wrong")
   })
 }
 
@@ -222,11 +210,11 @@ function startRandomQuest(questsObj, userLevel, headers) {
   if (questsArr.length > 0) {
     document.getElementById('randomQuestButton').addEventListener('click', async () => {
       let randomQuest = randomElememtFromArray(questsArr);
-      await fetch("https://habitica.com/api/v3/groups/party/quests/invite/" + randomQuest, {
+      await fetch(`https://habitica.com/api/v3/groups/party/quests/invite/${randomQuest}`, {
         method: "post",
         headers
       }).then(resp => resp.json);
-      document.getElementById("randomQuestResponse").innerText = "Invited party to quest: " + randomQuest;
+      document.getElementById("randomQuestResponse").innerText = `Invited party to quest: ${randomQuest}`;
       document.getElementById("randomQuestButton").style.display = "none";
     })
   }
@@ -235,7 +223,7 @@ function startRandomQuest(questsObj, userLevel, headers) {
 
 }
 
-function equipRandomEquipment(gearOwned) {
+function equipRandomEquipment(gearOwned, allGear, headers) {
   let html = "<h2>Random Costume or Battle Gear</h2>"
   html += "<p>Don't know what to wear? Let the RNG choose for you!</p>"
   html += "<p>Want to make it harder? Let RNG choose your equipment!</p>"
@@ -248,6 +236,52 @@ function equipRandomEquipment(gearOwned) {
   div.classList.add("wrapper");
   document.getElementById("main").appendChild(div);
 
+  async function equip(t) {
+    let description = `Equipped ${t}: `;
+    let equippedKeys = [];
+    let gearGroups = {};
+    for (let gear in gearOwned) {
+      if (gearOwned[gear]) {
+        const type = gear.match(/^[a-zA-Z]+/)[0];
+        gearGroups[type] = gearGroups[type] || [];
+        gearGroups[type].push(gear);
+      }
+    }
+    const types = ['armor', 'back', 'body', 'eyewear', 'head', 'headAccessory'].filter(t => gearGroups.hasOwnProperty(t));
+    for (let type of types) {
+      let arr = gearGroups[type];
+      let randomThing = arr[Math.floor(Math.random() * arr.length)];
+      await equipItem(t, randomThing, headers);
+      equippedKeys.push(randomThing);
+    }
+
+
+    if (gearGroups.hasOwnProperty("weapon")) {
+      let weapons = gearGroups.weapon;
+      let randomWeapon = weapons[Math.floor(Math.random() * weapons.length)];
+      await equipItem(t, randomWeapon, headers);
+      equippedKeys.push(randomWeapon);
+
+      if (!allGear[randomWeapon].twoHanded && gearGroups.hasOwnProperty("shield")) {
+        let shields = gearGroups.shield;
+        let randomShield = shields[Math.floor(Math.random() * shields.length)];
+        await equipItem(t, randomShield, headers);
+        equippedKeys.push(randomShield);
+      }
+
+    } else if (gearGroups.hasOwnProperty("shield")) {
+      let shields = gearGroups.shield;
+      let randomShield = shields[Math.floor(Math.random() * shields.length)];
+      await equipItem(t, randomShield, headers);
+      equippedKeys.push(randomShield);
+    }
+
+    description += equippedKeys.join(", ");
+    document.getElementById("randomEquipResponse").innerHTML = description;
+  }
+
+  document.getElementById("randomBattleGear").addEventListener("click", () => equip("equipped"));
+  document.getElementById("randomCostume").addEventListener("click", () => equip("costume"));
 }
 
 document.getElementById('submit-api-key').addEventListener("click", async () => {
@@ -308,21 +342,27 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
       method: 'GET',
       headers
     })
-    .then(r => r.json())
+    .then(r => r.json());
+
+  const allGear = await fetch('https://habitica.com/api/v3/content' + "?language=en", {
+    method: 'get',
+    headers
+  }).then(r => r.json()).then(d => d.data.gear.flat)
+
   document.getElementById("main").innerHTML = "";
 
-  randomAnimals(mountsObj, petsObj, UUID, apiKey);
+  randomAnimals(mountsObj, petsObj, headers);
 
   if (partyDataWasFound) {
-    randomTransformationItem(specialObj, partyMembersArr, UUID, apiKey);
+    randomTransformationItem(specialObj, partyMembersArr, headers);
     if (!quest.key) {
       startRandomQuest(questsObj, userLevel, headers);
     }
   }
 
-  randomBackground(Object.keys(backgroundsObj), UUID, apiKey)
+  randomBackground(Object.keys(backgroundsObj), headers)
 
-  buyRandomEquipment(goldOwned, userClass, availableEquipmentArr, UUID, apiKey);
+  buyRandomEquipment(goldOwned, userClass, availableEquipmentArr, headers);
 
-  equipRandomEquipment(gearObj);
+  equipRandomEquipment(gearObj, allGear, headers);
 });
