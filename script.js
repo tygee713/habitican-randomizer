@@ -287,6 +287,7 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
 document.getElementById('submit-api-key').addEventListener("click", async () => {
   let UUID = document.getElementById("UUID").value;
   let apiKey = document.getElementById("api-key").value;
+  document.getElementById("main").innerHTML = '<div class="wrapper"><p>Loading..</p></div>'
   let headers = {
     "x-api-user": UUID,
     "x-api-key": apiKey
