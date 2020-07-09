@@ -237,7 +237,7 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
   document.getElementById("main").appendChild(div);
 
   async function equip(t) {
-    let description = `Equipped ${t}: `;
+    let description = `New ${t}: `;
     let equippedKeys = [];
     let gearGroups = {};
     for (let gear in gearOwned) {
@@ -276,7 +276,7 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
       equippedKeys.push(randomShield);
     }
 
-    description += equippedKeys.join(", ");
+    description += equippedKeys.map(item => allGear[item].text).join(", ");
     document.getElementById("randomEquipResponse").innerHTML = description;
   }
 
