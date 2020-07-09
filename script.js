@@ -252,7 +252,8 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
       let arr = gearGroups[type];
       let randomThing = arr[Math.floor(Math.random() * arr.length)];
       await equipItem(t, randomThing, headers);
-      equippedKeys.push(randomThing);
+      let localObj = {type, key: randomThing};
+      equippedKeys.push(localObj);
     }
 
 
@@ -260,23 +261,26 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
       let weapons = gearGroups.weapon;
       let randomWeapon = weapons[Math.floor(Math.random() * weapons.length)];
       await equipItem(t, randomWeapon, headers);
-      equippedKeys.push(randomWeapon);
+      let localObj = {type: "weapon", key: randomWeapon};
+      equippedKeys.push(localObj);
 
       if (!allGear[randomWeapon].twoHanded && gearGroups.hasOwnProperty("shield")) {
         let shields = gearGroups.shield;
         let randomShield = shields[Math.floor(Math.random() * shields.length)];
         await equipItem(t, randomShield, headers);
-        equippedKeys.push(randomShield);
+        let localObj = {type: "shield", key: randomShield};
+        equippedKeys.push(localObj);
       }
 
     } else if (gearGroups.hasOwnProperty("shield")) {
       let shields = gearGroups.shield;
       let randomShield = shields[Math.floor(Math.random() * shields.length)];
       await equipItem(t, randomShield, headers);
-      equippedKeys.push(randomShield);
+      let localObj = {type: "shield", key: randomShield};
+      equippedKeys.push(localObj);
     }
 
-    description += equippedKeys.map(item => allGear[item].text).join(", ");
+    description += '<ul><li>' + equippedKeys.map(obj => `${obj.type}: ${allGear[obj.key].text}`).join("</li><li>") + '</li></ul>';
     document.getElementById("randomEquipResponse").innerHTML = description;
   }
 
