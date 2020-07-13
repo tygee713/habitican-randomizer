@@ -294,7 +294,8 @@ document.getElementById('submit-api-key').addEventListener("click", async () => 
   document.getElementById("main").innerHTML = '<div class="wrapper"><p>Loading..</p></div>'
   let headers = {
     "x-api-user": UUID,
-    "x-api-key": apiKey
+    "x-api-key": apiKey,
+    "x-client": "c073342f-4a65-4a13-9ffd-9e7fa5410d6b - Ieahleen's Habitican Randomizer"
   }
 
   const {
