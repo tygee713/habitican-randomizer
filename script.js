@@ -113,7 +113,7 @@ function buyRandomEquipment(gp, c, eqArr, headers) {
   let html = '<h2>Buy Random Equipment from the Market!</h2><p>Do you have too much stuff to buy, after maybe emptying your inventory ';
   html += 'by resetting your account, or kind request to an admin?';
   html += 'Just buy a random one using the button!</p>';
-  eqArr = eqArr.filter(i => i.value <= gp && (i.klass === "special" || i.klass === c));
+  eqArr = eqArr.filter(i => i.value <= gp);
   if (eqArr.length > 0) {
     html += '<input type="button" id="buyRandomEquipment" value="Buy random piece of equipment">'
   } else {
