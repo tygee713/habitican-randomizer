@@ -1,5 +1,3 @@
-[![Anurag's github stats](https://github-readme-stats.vercel.app/api?username=ieahleen)](https://github.com/anuraghazra/github-readme-stats)
-
 # habitican-randomizer
 Repository for the Habitican Tool for a randomized avatar, or everything else that can be randomized in the game.
 
