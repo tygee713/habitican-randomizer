@@ -167,31 +167,7 @@ async function randomBackground(backgrounds, headers) {
 function startRandomQuest(questsObj, userLevel, headers) {
   let html = '<h2>Start a random quest!</h2><p>Your party is not on a quest. Why don\'t you start one randomly right here? No need to choose it yourself!</p>';
 
-  let questsArr = Object.keys(questsObj).filter(quest => {
-    if (questsObj[quest] && questsObj[quest] > 0) {
-      switch (quest) {
-        case 'atom1':
-        case 'atom2':
-        case 'atom3':
-          return !userLevel < 15;
-        case 'vice1':
-        case 'vice2':
-        case 'vice3':
-          return !userLevel < 30;
-        case 'goldenknight1':
-        case 'goldenknight2':
-        case 'goldenknight3':
-          return !userLevel < 40;
-        case 'moonstone1':
-        case 'moonstone2':
-        case 'moonstone3':
-          return !userLevel < 60;
-        default:
-          return true;
-      }
-    }
-
-  })
+  let questsArr = Object.keys(questsObj).filter(quest => questsObj[quest] && questsObj[quest] > 0)
 
   if (questsArr.length > 0) {
     html += '<input type="button" id="randomQuestButton" value="Start a random quest from your inventory">';
