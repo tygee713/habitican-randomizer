@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function randomElementFromArray(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -94,10 +94,17 @@ function randomAnimals(mountsObj, petsObj, headers) {
 }
 
 function randomTransformationItem(specialObj, partyMembersArr, headers) {
-  let html = '<h2>Random Transformation Item</h2><p>Do you have many party members and many transformation items and choosing is so much effort? No issue, just press a button, and no choice is necessary.</p>';
-  let transformationItems = ["snowball", "spookySparkles", "seafoam", "shinySeed"].filter(i => specialObj[i] && specialObj[i] > 0);
+  let html =
+    "<h2>Random Transformation Item</h2><p>Do you have many party members and many transformation items and choosing is so much effort? No issue, just press a button, and no choice is necessary.</p>";
+  let transformationItems = [
+    "snowball",
+    "spookySparkles",
+    "seafoam",
+    "shinySeed",
+  ].filter((i) => specialObj[i] && specialObj[i] > 0);
   if (transformationItems.length > 0) {
-    html += '<input type="button" id="randomTransformationItem" value="Cast random transformation item on random party member">'
+    html +=
+      '<input type="button" id="randomTransformationItem" value="Cast random transformation item on random party member">';
   } else {
     html += '<p id="not-found">No transformation items were found</p>';
   }
@@ -110,14 +117,22 @@ function randomTransformationItem(specialObj, partyMembersArr, headers) {
   document.getElementById("main").appendChild(div);
 
   if (transformationItems.length > 0) {
-    document.getElementById("randomTransformationItem").addEventListener("click", async () => {
-      let randomTransformationItem =
-        randomElementFromArray(transformationItems);
-      let randomPartyMemberObj = randomElementFromArray(partyMembersArr);
+    document
+      .getElementById("randomTransformationItem")
+      .addEventListener("click", async () => {
+        let randomTransformationItem =
+          randomElementFromArray(transformationItems);
+        let randomPartyMemberObj = randomElementFromArray(partyMembersArr);
 
-      let response = await castSkill(randomTransformationItem, randomPartyMemberObj.id, headers);
-      document.getElementById("transformation-item-response").innerHTML = `${randomTransformationItem} was used on ${randomPartyMemberObj.profile.name} (${randomPartyMemberObj.auth.local.username}).`;
-    })
+        let response = await castSkill(
+          randomTransformationItem,
+          randomPartyMemberObj.id,
+          headers
+        );
+        document.getElementById(
+          "transformation-item-response"
+        ).innerHTML = `${randomTransformationItem} was used on ${randomPartyMemberObj.profile.name} (${randomPartyMemberObj.auth.local.username}).`;
+      });
   }
 }
 
