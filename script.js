@@ -1,14 +1,14 @@
 'use strict';
 
-function randomElememtFromArray(arr) {
+function randomElementFromArray(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
 async function equipItem(type, key, headers) {
   return await fetch(`https://habitica.com/api/v3/user/equip/${type}/${key}`, {
     method: "POST",
-    headers
-  }).then(res => res.json())
+    headers,
+  }).then((res) => res.json());
 }
 
 async function castSkill(spellId, targetId, headers) {
@@ -18,34 +18,35 @@ async function castSkill(spellId, targetId, headers) {
   }
   let response = await fetch(url, {
     method: "POST",
-    headers
-
-  }).then(response => response.json());
+    headers,
+  }).then((response) => response.json());
   return response;
 }
 
 function randomAnimals(mountsObj, petsObj, headers) {
-  let html = '';
-  let mounts = Object.keys(mountsObj).filter(m => mountsObj[m]);
-  let pets = Object.keys(petsObj).filter(p => petsObj[p]);
-  html += '<h2>Random Pet and Random Mount!</h2><p>Don\'t want to choose your next mount or pet? You can randomize with a click.</p><p>Each pet and mount has the same chance to come out, so it can happen that if currect equipped animal is selected, then it is just unequipped.</p>'
+  let html = "";
+  let mounts = Object.keys(mountsObj).filter((m) => mountsObj[m]);
+  let pets = Object.keys(petsObj).filter((p) => petsObj[p]);
+  html +=
+    "<h2>Random Pet and Random Mount!</h2><p>Don't want to choose your next mount or pet? You can randomize with a click.</p><p>Each pet and mount has the same chance to come out, so it can happen that if currect equipped animal is selected, then it is just unequipped.</p>";
   // random mount button
   if (mounts.length > 0) {
-    html += '<input type="button" id="randomMount" value="Equip random mount">'
+    html += '<input type="button" id="randomMount" value="Equip random mount">';
   } else {
-    html += '<p class="not-found">Mounts not found</p>'
+    html += '<p class="not-found">Mounts not found</p>';
   }
 
   // random pet button
   if (pets.length > 0) {
-    html += '<input type="button" id="randomPet" value="Equip random pet">'
+    html += '<input type="button" id="randomPet" value="Equip random pet">';
   } else {
-    html += '<p class="not-found">Pets not found</p>'
+    html += '<p class="not-found">Pets not found</p>';
   }
 
   // random pet + mount button
   if (mounts.length > 0 && pets.length > 0) {
-    html += '<input type="button" id="randomPetAndMount" value="Equip random pet and mount">'
+    html +=
+      '<input type="button" id="randomPetAndMount" value="Equip random pet and mount">';
   }
   html += '<p id="animalResponse"></p>';
 
@@ -56,30 +57,40 @@ function randomAnimals(mountsObj, petsObj, headers) {
 
   if (pets.length > 0) {
     document.getElementById("randomPet").addEventListener("click", async () => {
-      let randomPetToEquip = randomElememtFromArray(pets);
-      let response = await equipItem("pet", randomPetToEquip, headers)
-      document.getElementById("animalResponse").innerHTML = response.success ? `Successfully equipped pet ${randomPetToEquip}` : "Something went wrong";
+      let randomPetToEquip = randomElementFromArray(pets);
+      let response = await equipItem("pet", randomPetToEquip, headers);
+      document.getElementById("animalResponse").innerHTML = response.success
+        ? `Successfully equipped pet ${randomPetToEquip}`
+        : "Something went wrong";
     });
   }
 
   if (mounts.length > 0) {
-    document.getElementById("randomMount").addEventListener("click", async () => {
-      let randomMountToEquip = randomElememtFromArray(mounts);
-      let response = await equipItem("mount", randomMountToEquip, headers)
-      document.getElementById("animalResponse").innerHTML = response.success ? `Successfully equipped mount ${randomMountToEquip}` : "Something went wrong";
-    });
+    document
+      .getElementById("randomMount")
+      .addEventListener("click", async () => {
+        let randomMountToEquip = randomElementFromArray(mounts);
+        let response = await equipItem("mount", randomMountToEquip, headers);
+        document.getElementById("animalResponse").innerHTML = response.success
+          ? `Successfully equipped mount ${randomMountToEquip}`
+          : "Something went wrong";
+      });
   }
 
   if (pets.length > 0 && mounts.length > 0) {
-    document.getElementById("randomPetAndMount").addEventListener("click", async () => {
-      let randomPetToEquip = randomElememtFromArray(pets);
-      let randomMountToEquip = randomElememtFromArray(mounts);
-      let response1 = await equipItem("pet", randomPetToEquip, headers)
-      let response2 = await equipItem("mount", randomMountToEquip, headers)
-      document.getElementById("animalResponse").innerHTML = response1.success && response2.success ? `Successfully equipped pet ${randomPetToEquip} and mount ${randomMountToEquip}` : "Something went wrong";
-    });
+    document
+      .getElementById("randomPetAndMount")
+      .addEventListener("click", async () => {
+        let randomPetToEquip = randomElementFromArray(pets);
+        let randomMountToEquip = randomElementFromArray(mounts);
+        let response1 = await equipItem("pet", randomPetToEquip, headers);
+        let response2 = await equipItem("mount", randomMountToEquip, headers);
+        document.getElementById("animalResponse").innerHTML =
+          response1.success && response2.success
+            ? `Successfully equipped pet ${randomPetToEquip} and mount ${randomMountToEquip}`
+            : "Something went wrong";
+      });
   }
-
 }
 
 function randomTransformationItem(specialObj, partyMembersArr, headers) {
@@ -100,8 +111,9 @@ function randomTransformationItem(specialObj, partyMembersArr, headers) {
 
   if (transformationItems.length > 0) {
     document.getElementById("randomTransformationItem").addEventListener("click", async () => {
-      let randomTransformationItem = randomElememtFromArray(transformationItems)
-      let randomPartyMemberObj = randomElememtFromArray(partyMembersArr);
+      let randomTransformationItem =
+        randomElementFromArray(transformationItems);
+      let randomPartyMemberObj = randomElementFromArray(partyMembersArr);
 
       let response = await castSkill(randomTransformationItem, randomPartyMemberObj.id, headers);
       document.getElementById("transformation-item-response").innerHTML = `${randomTransformationItem} was used on ${randomPartyMemberObj.profile.name} (${randomPartyMemberObj.auth.local.username}).`;
@@ -110,14 +122,17 @@ function randomTransformationItem(specialObj, partyMembersArr, headers) {
 }
 
 function buyRandomEquipment(gp, c, eqArr, headers) {
-  let html = '<h2>Buy Random Equipment from the Market!</h2><p>Do you have too much stuff to buy, after maybe emptying your inventory ';
-  html += 'by resetting your account, or kind request to an admin?';
-  html += 'Just buy a random one using the button!</p>';
-  eqArr = eqArr.filter(i => i.value <= gp);
+  let html =
+    "<h2>Buy Random Equipment from the Market!</h2><p>Do you have too much stuff to buy, after maybe emptying your inventory ";
+  html += "by resetting your account, or kind request to an admin?";
+  html += "Just buy a random one using the button!</p>";
+  eqArr = eqArr.filter((i) => i.value <= gp);
   if (eqArr.length > 0) {
-    html += '<input type="button" id="buyRandomEquipment" value="Buy random piece of equipment">'
+    html +=
+      '<input type="button" id="buyRandomEquipment" value="Buy random piece of equipment">';
   } else {
-    html += '<p class="not-found">No purchasable equipment was found. Maybe you do not have anything remaining in the Market, or you need to change class or get more gold.</p>';
+    html +=
+      '<p class="not-found">No purchasable equipment was found. Maybe you do not have anything remaining in the Market, or you need to change class or get more gold.</p>';
   }
 
   let div = document.createElement("div");
@@ -130,22 +145,26 @@ function buyRandomEquipment(gp, c, eqArr, headers) {
     document
       .getElementById("buyRandomEquipment")
       .addEventListener("click", async () => {
-        let itemToPurchase = randomElememtFromArray(eqArr);
-        const response = await fetch(`https://habitica.com/api/v3/user/buy-gear/${itemToPurchase.key}`, {
+        let itemToPurchase = randomElementFromArray(eqArr);
+        const response = await fetch(
+          `https://habitica.com/api/v3/user/buy-gear/${itemToPurchase.key}`,
+          {
             method: "POST",
-            headers
-          })
-          .then(resp => resp.json());
-        document.getElementById("randomEquipmentDiv").innerHTML = response.message;
-      })
+            headers,
+          }
+        ).then((resp) => resp.json());
+        document.getElementById("randomEquipmentDiv").innerHTML =
+          response.message;
+      });
   }
-
 }
 
 async function randomBackground(backgrounds, headers) {
-  let html = '<h2>Equip a Random Background</h2><p>Don\'t know what to wear? Let the Random Numger Generator choose your background!</p>'
-  html += '<input type="button" id="equipRandomBackgroundButton" value="Equip random background">'
-  html += '<p id="backgroundResponse"></p>'
+  let html =
+    "<h2>Equip a Random Background</h2><p>Don't know what to wear? Let the Random Numger Generator choose your background!</p>";
+  html +=
+    '<input type="button" id="equipRandomBackgroundButton" value="Equip random background">';
+  html += '<p id="backgroundResponse"></p>';
 
   let div = document.createElement("div");
   div.innerHTML = html;
@@ -153,15 +172,21 @@ async function randomBackground(backgrounds, headers) {
   div.setAttribute("id", "equipRandomBackground");
   document.getElementById("main").appendChild(div);
 
-  document.getElementById("equipRandomBackgroundButton").addEventListener("click", async () => {
-    let backgroundToEquip = randomElememtFromArray(backgrounds);
-    const response = await fetch(`https://habitica.com/api/v3/user/unlock?path=background.${backgroundToEquip}`, {
-        method: "POST",
-        headers
-      })
-      .then(resp => resp.json());
-    document.getElementById("backgroundResponse").innerHTML = (response.success ? (`Equipped background ${backgroundToEquip}`) : "Something went wrong")
-  })
+  document
+    .getElementById("equipRandomBackgroundButton")
+    .addEventListener("click", async () => {
+      let backgroundToEquip = randomElementFromArray(backgrounds);
+      const response = await fetch(
+        `https://habitica.com/api/v3/user/unlock?path=background.${backgroundToEquip}`,
+        {
+          method: "POST",
+          headers,
+        }
+      ).then((resp) => resp.json());
+      document.getElementById("backgroundResponse").innerHTML = response.success
+        ? `Equipped background ${backgroundToEquip}`
+        : "Something went wrong";
+    });
 }
 
 function startRandomQuest(questsObj, userLevel, headers) {
@@ -185,7 +210,7 @@ function startRandomQuest(questsObj, userLevel, headers) {
 
   if (questsArr.length > 0) {
     document.getElementById('randomQuestButton').addEventListener('click', async () => {
-      let randomQuest = randomElememtFromArray(questsArr);
+      let randomQuest = randomElementFromArray(questsArr);
       await fetch(`https://habitica.com/api/v3/groups/party/quests/invite/${randomQuest}`, {
         method: "post",
         headers
