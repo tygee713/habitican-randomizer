@@ -251,33 +251,34 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
     const types = ['armor', 'back', 'body', 'eyewear', 'head', 'headAccessory'].filter(t => gearGroups.hasOwnProperty(t));
     for (let type of types) {
       let arr = gearGroups[type];
-      let randomThing = arr[Math.floor(Math.random() * arr.length)];
+      let randomThing = randomElementFromArray(arr);
       await equipItem(t, randomThing, headers);
-      let localObj = {type, key: randomThing};
+      let localObj = { type, key: randomThing };
       equippedKeys.push(localObj);
     }
-
 
     if (gearGroups.hasOwnProperty("weapon")) {
       let weapons = gearGroups.weapon;
       let randomWeapon = weapons[Math.floor(Math.random() * weapons.length)];
       await equipItem(t, randomWeapon, headers);
-      let localObj = {type: "weapon", key: randomWeapon};
+      let localObj = { type: "weapon", key: randomWeapon };
       equippedKeys.push(localObj);
 
-      if (!allGear[randomWeapon].twoHanded && gearGroups.hasOwnProperty("shield")) {
+      if (
+        !allGear[randomWeapon].twoHanded &&
+        gearGroups.hasOwnProperty("shield")
+      ) {
         let shields = gearGroups.shield;
-        let randomShield = shields[Math.floor(Math.random() * shields.length)];
+        let randomShield = randomElementFromArray(shields);
         await equipItem(t, randomShield, headers);
-        let localObj = {type: "shield", key: randomShield};
+        let localObj = { type: "shield", key: randomShield };
         equippedKeys.push(localObj);
       }
-
     } else if (gearGroups.hasOwnProperty("shield")) {
       let shields = gearGroups.shield;
-      let randomShield = shields[Math.floor(Math.random() * shields.length)];
+      let randomShield = randomElementFromArray(shields);
       await equipItem(t, randomShield, headers);
-      let localObj = {type: "shield", key: randomShield};
+      let localObj = { type: "shield", key: randomShield };
       equippedKeys.push(localObj);
     }
 
