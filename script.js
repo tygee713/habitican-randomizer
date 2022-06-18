@@ -270,7 +270,7 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
     ].filter((t) => gearGroups.hasOwnProperty(t));
     for (let type of types) {
       let arr = gearGroups[type];
-      let randomThing = arr[Math.floor(Math.random() * arr.length)];
+      let randomThing = randomElementFromArray(arr);
       await equipItem(t, randomThing, headers);
       let localObj = { type, key: randomThing };
       equippedKeys.push(localObj);
@@ -288,14 +288,14 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
         gearGroups.hasOwnProperty("shield")
       ) {
         let shields = gearGroups.shield;
-        let randomShield = shields[Math.floor(Math.random() * shields.length)];
+        let randomShield = randomElementFromArray(shields);
         await equipItem(t, randomShield, headers);
         let localObj = { type: "shield", key: randomShield };
         equippedKeys.push(localObj);
       }
     } else if (gearGroups.hasOwnProperty("shield")) {
       let shields = gearGroups.shield;
-      let randomShield = shields[Math.floor(Math.random() * shields.length)];
+      let randomShield = randomElementFromArray(shields);
       await equipItem(t, randomShield, headers);
       let localObj = { type: "shield", key: randomShield };
       equippedKeys.push(localObj);
