@@ -337,85 +337,88 @@ function equipRandomEquipment(gearOwned, allGear, headers) {
     .getElementById('randomCostume')
     .addEventListener('click', () => equip('costume'));
 }
+document.querySelector('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  build();
+});
 
-document
-  .getElementById('submit-api-key')
-  .addEventListener('click', async () => {
-    let UUID = document.getElementById('UUID').value;
-    let apiKey = document.getElementById('api-key').value;
-    document.getElementById('main').innerHTML =
-      '<div class="wrapper"><p>Loading..</p></div>';
-    let headers = {
-      'x-api-user': UUID,
-      'x-api-key': apiKey,
-      'x-client':
-        "c073342f-4a65-4a13-9ffd-9e7fa5410d6b - Ieahleen's Habitican Randomizer",
-    };
+async function build() {
+  let UUID = document.getElementById('UUID').value;
+  let apiKey = document.getElementById('api-key').value;
+  document.getElementById('main').innerHTML =
+    '<form class="wrapper"><p>Loading..</p></div>';
+  let headers = {
+    'x-api-user': UUID,
+    'x-api-key': apiKey,
+    'x-client':
+      "c073342f-4a65-4a13-9ffd-9e7fa5410d6b - Ieahleen's Habitican Randomizer",
+  };
 
-    const {
-      data: {
-        items: {
-          mounts: mountsObj,
-          pets: petsObj,
-          special: specialObj,
-          quests: questsObj,
-          gear: { owned: gearObj },
-        },
-        stats: { gp: goldOwned, class: userClass, lvl: userLevel },
-        purchased: { background: backgroundsObj },
+  const {
+    data: {
+      items: {
+        mounts: mountsObj,
+        pets: petsObj,
+        special: specialObj,
+        quests: questsObj,
+        gear: { owned: gearObj },
       },
-    } = await myFetch('https://habitica.com/api/v3/user', {
-      method: 'GET',
-      headers,
-    });
-
-    const {
-      success: partyDataWasFound,
-      error,
-      data: partyMembersArr,
-    } = await myFetch('https://habitica.com/api/v3/groups/party/members', {
-      method: 'GET',
-      headers,
-    });
-
-    const { data: availableEquipmentArr } = await myFetch(
-      'https://habitica.com/api/v3/user/inventory/buy',
-      {
-        method: 'GET',
-        headers,
-      }
-    );
-
-    const {
-      data: { quest },
-    } = await myFetch('https://habitica.com/api/v3/groups/party', {
-      method: 'GET',
-      headers,
-    });
-
-    const {
-      data: {
-        gear: { flat: allGear },
-      },
-    } = await myFetch('https://habitica.com/api/v3/content' + '?language=en', {
-      method: 'get',
-      headers,
-    });
-
-    document.getElementById('main').innerHTML = '';
-
-    randomAnimals(mountsObj, petsObj, headers);
-
-    if (partyDataWasFound) {
-      randomTransformationItem(specialObj, partyMembersArr, headers);
-      if (!quest.key) {
-        startRandomQuest(questsObj, userLevel, headers);
-      }
-    }
-
-    randomBackground(Object.keys(backgroundsObj), headers);
-
-    buyRandomEquipment(goldOwned, availableEquipmentArr, headers);
-
-    equipRandomEquipment(gearObj, allGear, headers);
+      stats: { gp: goldOwned, class: userClass, lvl: userLevel },
+      purchased: { background: backgroundsObj },
+    },
+  } = await myFetch('https://habitica.com/api/v3/user', {
+    method: 'GET',
+    headers,
   });
+
+  const {
+    success: partyDataWasFound,
+    error,
+    data: partyMembersArr,
+  } = await myFetch('https://habitica.com/api/v3/groups/party/members', {
+    method: 'GET',
+    headers,
+  });
+
+  const { data: availableEquipmentArr } = await myFetch(
+    'https://habitica.com/api/v3/user/inventory/buy',
+    {
+      method: 'GET',
+      headers,
+    }
+  );
+
+  const {
+    data: { quest },
+  } = await myFetch('https://habitica.com/api/v3/groups/party', {
+    method: 'GET',
+    headers,
+  });
+
+  const {
+    data: {
+      gear: { flat: allGear },
+    },
+  } = await myFetch('https://habitica.com/api/v3/content' + '?language=en', {
+    method: 'get',
+    headers,
+  });
+
+  document.getElementById('main').innerHTML = '';
+
+  randomAnimals(mountsObj, petsObj, headers);
+
+  if (partyDataWasFound) {
+    randomTransformationItem(specialObj, partyMembersArr, headers);
+    if (!quest.key) {
+      startRandomQuest(questsObj, userLevel, headers);
+    }
+  }
+
+  randomBackground(Object.keys(backgroundsObj), headers);
+
+  buyRandomEquipment(goldOwned, availableEquipmentArr, headers);
+
+  equipRandomEquipment(gearObj, allGear, headers);
+}

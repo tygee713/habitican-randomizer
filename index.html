@@ -13,6 +13,7 @@
     </header>
     <main id="main">
         <div class="wrapper">
+          <form>
             <p>To use this tool you need to provide your UUID and API key, which you can find at <a href="https://habitica.com/user/settings/api" target="_blank">Settings-&gt;API</a> on the website, or at Settings->API on the app. This tool will not memorize your API, but you can use your browser's password managment tool to not have to write it each time.</p>
             <div>
                 <label for="UUID">UUID</label>
@@ -22,7 +23,8 @@
                 <label for="api-key">API key</label>
                 <input id="api-key" type="password" placeholder="your API key">
             </div>
-            <input id="submit-api-key" type="button" value="load user data">
+            <input id="submit-api-key" type="submit" value="load user data">
+          </form>
         </div>
     </main>
     <footer id="footer"></footer>
