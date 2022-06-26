@@ -267,6 +267,13 @@ function equipRandomEquipment(gearOwned, allGear) {
     let description = `New ${t}: `;
     let equippedKeys = [];
     let gearGroups = {};
+    const equipper = async (type) => {
+      let arr = gearGroups[type];
+      let randomThing = randomElementFromArray(arr);
+      await equipItem(t, randomThing);
+      let equipped = { type, key: randomThing };
+      return equipped;
+    };
     for (let gear in gearOwned) {
       if (gearOwned[gear]) {
         const type = gear.match(/^[a-zA-Z]+/)[0];
@@ -283,36 +290,23 @@ function equipRandomEquipment(gearOwned, allGear) {
       'headAccessory',
     ].filter((t) => gearGroups.hasOwnProperty(t));
     for (let type of types) {
-      let arr = gearGroups[type];
-      let randomThing = randomElementFromArray(arr);
-      await equipItem(t, randomThing);
-      let localObj = { type, key: randomThing };
-      equippedKeys.push(localObj);
+      const equipped = await equipper(type);
+      equippedKeys.push(equipped);
     }
 
     if (gearGroups.hasOwnProperty('weapon')) {
-      let weapons = gearGroups.weapon;
-      let randomWeapon = weapons[Math.floor(Math.random() * weapons.length)];
-      await equipItem(t, randomWeapon);
-      let localObj = { type: 'weapon', key: randomWeapon };
-      equippedKeys.push(localObj);
-
+      const equippedWeapon = await await equipper('weapon');
+      equippedKeys.push(equippedWeapon);
       if (
-        !allGear[randomWeapon].twoHanded &&
+        !allGear[equippedWeapon.key].twoHanded &&
         gearGroups.hasOwnProperty('shield')
       ) {
-        let shields = gearGroups.shield;
-        let randomShield = randomElementFromArray(shields);
-        await equipItem(t, randomShield);
-        let localObj = { type: 'shield', key: randomShield };
-        equippedKeys.push(localObj);
+        const equippedShield = await equipper('shield');
+        equippedKeys.push(equippedShield);
       }
     } else if (gearGroups.hasOwnProperty('shield')) {
-      let shields = gearGroups.shield;
-      let randomShield = randomElementFromArray(shields);
-      await equipItem(t, randomShield);
-      let localObj = { type: 'shield', key: randomShield };
-      equippedKeys.push(localObj);
+      const equipped = await equipper('shield');
+      equippedKeys.push(equipped);
     }
 
     description +=
