@@ -365,10 +365,6 @@ async function build() {
   );
 
   const {
-    data: { quest },
-  } = await fetchAPI('https://habitica.com/api/v3/groups/party', get);
-
-  const {
     data: {
       gear: { flat: allGear },
     },
@@ -383,6 +379,9 @@ async function build() {
 
   if (partyDataWasFound) {
     randomTransformationItem(specialObj, partyMembersArr);
+    const {
+      data: { quest },
+    } = await fetchAPI('https://habitica.com/api/v3/groups/party', get);
     if (!quest.key) {
       startRandomQuest(questsObj, userLevel);
     }
