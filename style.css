@@ -1,23 +1,28 @@
 :root {
-    --indigo: #6610f2;
-    --purple: #6f42c1;
+  --indigo: #6610f2;
+  --purple: #6f42c1;
 }
 div {
-    padding: 10px;
-    margin:2px;
+  padding: 10px;
+  margin: 2px;
 }
 [type='button'] {
-    margin: 10px;
+  margin: 10px;
 }
 .wrapper {
-    border: 3px dashed var(--purple);
-    padding: 20px;
+  border: 3px dashed var(--purple);
+  padding: 20px;
 }
 p {
-    max-width: 500px; 
+  max-width: 500px;
 }
 
 .not-found {
-      border: 1px red dotted;
-      padding: 5px;
-  }
+  border: 1px red dotted;
+  padding: 5px;
+}
+
+.hide {
+  visibility: hidden;
+  display: none;
+}

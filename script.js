@@ -103,6 +103,7 @@ function randomAnimals(mountsObj, petsObj) {
 }
 
 function randomTransformationItem(specialObj, partyMembersArr) {
+  console.log(partyMembersArr);
   let html =
     '<h2>Random Transformation Item</h2><p>Do you have many party members and many transformation items and choosing is so much effort? No issue, just press a button, and no choice is necessary.</p>';
   let transformationItems = [
@@ -113,7 +114,7 @@ function randomTransformationItem(specialObj, partyMembersArr) {
   ].filter((i) => specialObj[i] && specialObj[i] > 0);
   if (transformationItems.length > 0) {
     html +=
-      '<input type="button" id="randomTransformationItem" value="Cast random transformation item on random party member">';
+      '<input type="button" id="randomTransformationItem" value="Cast random transformation item on random party member"><label for="no-repeat"><input id="no-repeat" type="checkbox"> Do not transform if already trasformed please</legend><span id="no-repeat-span" class="not-found hide">No party mate available</span>';
   } else {
     html += '<p id="not-found">No transformation items were found</p>';
   }
@@ -127,8 +128,41 @@ function randomTransformationItem(specialObj, partyMembersArr) {
 
   if (transformationItems.length > 0) {
     document
+      .querySelector('#no-repeat')
+      .addEventListener('change', function () {
+        const noRepeatSpan = document.querySelector('#no-repeat-span');
+        if (
+          this.checked &&
+          partyMembersArr.filter((partyMate) => {
+            const buffs = partyMate.stats.buffs;
+            return !(
+              buffs.seafoam &&
+              buffs.shinySeed &&
+              buffs.snowball &&
+              buffs.spookySparkles
+            );
+          }).length === 0
+        ) {
+          noRepeatSpan.classList.remove('hide');
+        } else {
+          noRepeatSpan.classList.add('hide');
+        }
+      });
+    document
       .getElementById('randomTransformationItem')
       .addEventListener('click', async () => {
+        const checkbox = document.querySelector('#no-repeat');
+        if (checkbox.checked) {
+          partyMembersArr = partyMembersArr.filter((partyMate) => {
+            const buffs = partyMate.stats.buffs;
+            return !(
+              buffs.seafoam &&
+              buffs.shinySeed &&
+              buffs.snowball &&
+              buffs.spookySparkles
+            );
+          });
+        }
         let randomTransformationItem =
           randomElementFromArray(transformationItems);
         let randomPartyMemberObj = randomElementFromArray(partyMembersArr);
@@ -357,7 +391,10 @@ async function build() {
     success: partyDataWasFound,
     error,
     data: partyMembersArr,
-  } = await fetchAPI('https://habitica.com/api/v3/groups/party/members', get);
+  } = await fetchAPI(
+    'https://habitica.com/api/v3/groups/party/members?includeAllPublicFields=true',
+    get
+  );
 
   const { data: availableEquipmentArr } = await fetchAPI(
     'https://habitica.com/api/v3/user/inventory/buy',
