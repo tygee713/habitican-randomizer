@@ -450,24 +450,31 @@ async function build() {
   let UUID = document.getElementById('UUID').value;
   let apiKey = document.getElementById('api-key').value;
 
-  document.getElementById('main').innerHTML =
-    '<form class="wrapper"><p>Loading..</p></div>';
-
   [headers['x-api-user'], headers['x-api-key']] = [UUID, apiKey];
 
-  const {
-    data: {
-      items: {
-        mounts: mountsObj,
-        pets: petsObj,
-        special: specialObj,
-        quests: questsObj,
-        gear: { owned: gearObj },
+  const user = await fetchAPI('https://habitica.com/api/v3/user', get);
+
+  if (user.success !== true) {
+    document.getElementById('error-message').innerHTML = 'Wrong UUID or API Key';
+    return;
+  }
+  else {
+    document.getElementById('main').innerHTML =
+      '<form class="wrapper"><p>Loading..</p></div>';
+    const {
+      data: {
+        items: {
+          mounts: mountsObj,
+          pets: petsObj,
+          special: specialObj,
+          quests: questsObj,
+          gear: { owned: gearObj },
+        },
+        stats: { gp: goldOwned, class: userClass, lvl: userLevel },
+        purchased: { background: backgroundsObj },
       },
-      stats: { gp: goldOwned, class: userClass, lvl: userLevel },
-      purchased: { background: backgroundsObj },
-    },
-  } = await fetchAPI('https://habitica.com/api/v3/user', get);
+    } = user
+  }
 
   const {
     success: partyDataWasFound,
