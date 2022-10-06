@@ -1,6 +1,6 @@
 import { randomElementFromArray, fetchAPI, post } from "./utils.js";
 
-export const startRandomQuest = (questsObj, userLevel) =>{
+export const startRandomQuest = (questsObj) =>{
     let html =
       "<h2>Start a random quest!</h2><p>Your party is not on a quest. Why don't you start one randomly right here? No need to choose it yourself!</p>";
   

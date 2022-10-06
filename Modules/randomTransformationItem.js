@@ -1,4 +1,4 @@
-import { randomElementFromArray } from "./utils.js";
+import { randomElementFromArray, castSkill } from "./utils.js";
 
 export const randomTransformationItem = (specialObj, partyMembersArr, repeat = false) =>{
     const el = document.querySelector('#transf-item-id');
@@ -54,7 +54,7 @@ export const randomTransformationItem = (specialObj, partyMembersArr, repeat = f
         randItemButton.disabled = true;
       }
   
-      repCheckbox.addEventListener('change', function (event) {
+      repCheckbox.addEventListener('change', function () {
         const noRepeatSpan = document.querySelector('#no-repeat-span');
         const randItemButton = document.querySelector(
           '#randomTransformationItem'
@@ -99,7 +99,7 @@ export const randomTransformationItem = (specialObj, partyMembersArr, repeat = f
             randomElementFromArray(transformationItems);
           let randomPartyMemberObj = randomElementFromArray(partyMembersArr);
   
-          let response = await castSkill(
+          await castSkill(
             randomlyChoosenTransformationItem,
             randomPartyMemberObj.id
           );
