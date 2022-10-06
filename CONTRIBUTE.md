@@ -5,7 +5,7 @@ Please open issues if you find a bug, want to add a feature, or have a feature r
 
 ## Creating PRs
 Please consider contributing to issues with the https://github.com/ieahleen/habitican-randomizer/labels/help%20wanted label.
-Please before creating a PR ask in the related issue, so that only people will not work on the same features. If people don't provide any news in three dates, their assignment will be removed.
+Please before creating a PR ask in the related issue, so that multiple people will not work on the same features. If people don't provide any news in three dates, their assignment will be removed.
 
 ## Habitica 
 This tool uses the Habitica API
