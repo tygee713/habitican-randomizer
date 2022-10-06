@@ -15,3 +15,5 @@ As such it has to follow:
  - [Rules for Third Party Tools](https://habitica.fandom.com/wiki/Guidance_for_Comrades#Rules_for_Third-Party_Tools)
 
  
+## Community
+If you want to contribute and you want to chat while doing so, join the Discord server https://discord.gg/3aVYukZT
