@@ -56,7 +56,7 @@ async function build() {
     document.getElementById('error-message').innerHTML = 'Wrong UUID or API Key';
     return;
   }
-  
+
   document.getElementById('main').innerHTML =
     '<form class="wrapper"><p>Loading..</p></div>';
   const {
@@ -68,11 +68,11 @@ async function build() {
         quests: questsObj,
         gear: { owned: gearObj },
       },
-      stats: { gp: goldOwned},
+      stats: { gp: goldOwned },
       purchased: { background: backgroundsObj },
     },
-    } = user;
-  
+  } = user;
+
   const {
     success: partyDataWasFound,
     data: partyMembersArr,
